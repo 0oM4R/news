@@ -1,6 +1,6 @@
 const connection = require("../DB/connection");
 const userModel = require("../Model/reporterSchema");
-
+const multer = require('multer')
 const allUsers = async (req, res) => {
   await userModel
     .find({})
@@ -112,5 +112,27 @@ const logout = async (req, res) => {
     }
 
  }
+ const uploads = multer({
+  limits:{
+      fileSize:1000000
+  },
+  fileFilter(req,file,cb){
+      if(!file.originalname.match(/\.(jpg|jpeg|png|jfif)$/)){
+          cb(new Error('Please upload image'))
+      }
+      cb(null,true)
+  }
+})
+const avatar= async(req,res)=>{
+  try{
+      req.user.avatar = req.file.buffer
+      await req.user.save()
+      res.status(200).send()
+  }
+  catch(e){
+      res.status(400).send(e)
+  }
+}
+ 
 
-module.exports = { allUsers, addUser, getById, updateUser, deleteUser,login ,logout,logoutAll };
+module.exports = { allUsers, addUser, getById, updateUser, deleteUser,login ,logout,logoutAll,avatar,uploads };

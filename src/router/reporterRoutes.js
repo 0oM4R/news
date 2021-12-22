@@ -14,6 +14,8 @@ router.get('/profile',auth,(req, res) =>{
     res.send(req.user)
 }
 )
+
+router.post('/profile/avatar',auth,reporterController.uploads.single('avatar'),reporterController.avatar);
 router.patch("/editUser/:userId",auth,reporterController.updateUser);
 
 router.delete("/logout",auth,reporterController.logout);
